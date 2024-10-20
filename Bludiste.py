@@ -11,14 +11,14 @@ class Bludiste:
         return len(self.bludiste)
 
     def je_vychod(self):
-        return self.roboti_pozice == 2  # Vrací True, pokud je robot na východě
+        return self.roboti_pozice == 2  # true kdyz je na policku vychod
 
     def je_volno(self):
-        return self.roboti_kontrola == 0 or self.roboti_kontrola == 2  # Vrací True, pokud je volno
+        return self.roboti_kontrola == 0 or self.roboti_kontrola == 2  # true kdyz je policko pruchozi
 
     def get_vychod(self):
         for y, radek in enumerate(self.bludiste):
             for x, hodnota in enumerate(radek):
                 if hodnota == 2:
-                    return (y, x)  # Vrátí souřadnice východu
-        return None  # Pokud východ nenalezen
+                    return (y, x)  # index policka vychodu
+        return None  # pokud vychod neni
