@@ -1,0 +1,3 @@
+class Bludiste:
+    def __innit__(self, bludiste_list):
+
