@@ -1,21 +1,23 @@
 import tkinter as tk
 from Bludiste import Bludiste
 from BludisteView import BludisteView
+from BludisteDAO import BludisteDAO
+import os
 
 class BludisteApp:
-    def __init__(self, root, window_sirka, window_vyska, bludiste_data):
+    def __init__(self, root, window_sirka, window_vyska, cesta_k_souboru):
         self.root = root
         self.window_sirka = window_sirka
         self.window_vyska = window_vyska
 
-        # vytvori instanci tridy Bludiste
+        # Vytvoření instance a spusteni metody
+        dao = BludisteDAO()
+        bludiste_data = dao.nacti_bludiste(cesta_k_souboru)
+
+        # vytvoreni instance tridy
         self.bludiste = Bludiste(bludiste_data)
 
-        # zatim globalni, pote bude promenna, az bude robot
-        self.bludiste.roboti_pozice = bludiste_data[2][3]  # priklad nastaveni
-        self.bludiste.roboti_kontrola = bludiste_data[2][2]  # priklad nastaveni
-
-        # vytvoreni instance tridy Bludisteiew
+        # vytvoreni instance tridy
         self.view = BludisteView(root, self.bludiste, self.window_sirka, self.window_vyska)
         self.view.vykresli()
 
@@ -24,21 +26,17 @@ def main():
     root = tk.Tk()
     root.title("Bludiste App")
 
-    # zde se da nastavit rozmery okna
+    # sem napisu rozmery okna, mozna to pak udelam pres popup okno
     window_width = 600
     window_height = 450
 
-    # zde se vklada bludiste, mozna pak udelam odkaz na file ve kterem to bude zvlast
-    bludiste_data = [
-        [0, 1, 1, 1],
-        [0, 1, 0, 0],
-        [0, 0, 0, 2]  
-    ]
+    # cesta k souboru pres os knihovnu
+    cesta_k_souboru = os.path.join(os.path.dirname(__file__), 'bludiste_test.txt')
 
-    # vytvoreni aplikace
-    app = BludisteApp(root, window_width, window_height, bludiste_data)
+    # vytvoreni aplikece
+    app = BludisteApp(root, window_width, window_height, cesta_k_souboru)
 
-    # spousti se mainloop
+    # spusteni mainloop
     root.mainloop()
 
 if __name__ == "__main__":
