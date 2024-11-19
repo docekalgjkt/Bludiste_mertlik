@@ -3,7 +3,8 @@ from tkinter import filedialog
 import os
 from Bludiste import Bludiste
 from BludisteView import BludisteView
-from BludisteDAO import BludisteDAO
+from BludisteDAOFactory import BludisteDAOFactory
+
 
 class BludisteApp:
     def __init__(self, root, window_sirka, window_vyska):
@@ -11,23 +12,23 @@ class BludisteApp:
         self.window_sirka = window_sirka
         self.window_vyska = window_vyska
 
-        # zavolani metody pro vyber souboru
+        # Zavolani metody pro vyber souboru
         cesta_k_souboru = self.vyber_soubor()
 
         if cesta_k_souboru:
-            # vytvoreni instance dao a nacteni dat
-            dao = BludisteDAO()
+            # pouziti factory
+            dao = BludisteDAOFactory.get_bludiste_dao(cesta_k_souboru)
             bludiste_data = dao.nacti_bludiste(cesta_k_souboru)
 
-            # vytvoreni instance tridy Bludiste
+            # vytvoreni instance tridy bludiste
             self.bludiste = Bludiste(bludiste_data)
 
-            # vytvoreni instance tridy BludisteView
+            # vytvoreni instance tridy bludisteview
             self.view = BludisteView(root, self.bludiste, self.window_sirka, self.window_vyska)
             self.view.vykresli()
 
     def vyber_soubor(self):
-        # ziskani cesty k aktualnimu adresari
+        # ziskani cesty k akutalnimu adresari
         slozka = os.path.dirname(__file__)
 
         # filtr pro podporovane soubory
@@ -46,6 +47,7 @@ class BludisteApp:
 
         return soubor
 
+
 # spusteni aplikace
 def main():
     root = tk.Tk()
@@ -58,8 +60,9 @@ def main():
     # vytvoreni instance aplikace
     app = BludisteApp(root, window_width, window_height)
 
-    # spusteni mainloop
+    # spusteni hlavni smycky
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()
