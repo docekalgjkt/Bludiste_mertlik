@@ -12,55 +12,49 @@ class BludisteApp:
         self.window_sirka = window_sirka
         self.window_vyska = window_vyska
 
-        # Zavolani metody pro vyber souboru
+        # nastaveni velikosti okna
+        self.root.geometry(f"{window_sirka}x{window_vyska}")
+
+        # inicializace canvasu a ovladaciho panelu
+        canvas_sirka = int(0.75 * self.window_sirka)
+        canvas_vyska = self.window_vyska
+        control_width = int(0.25 * self.window_sirka)
+        self.view = BludisteView(root, canvas_sirka, canvas_vyska, control_width, self.vyber_a_vykresli_bludiste)
+        self.view.vykresli(blank=True)  # zobrazi prazdne pole
+
+        # inicializace bludiste, zatim prazdne
+        self.bludiste = None
+
+    def vyber_a_vykresli_bludiste(self):
         cesta_k_souboru = self.vyber_soubor()
+        if not cesta_k_souboru:
+            return
 
-        if cesta_k_souboru:
-            # pouziti factory
-            dao = BludisteDAOFactory.get_bludiste_dao(cesta_k_souboru)
-            bludiste_data = dao.nacti_bludiste(cesta_k_souboru)
+        # poutiti DAO factory
+        dao = BludisteDAOFactory.get_bludiste_dao(cesta_k_souboru)
+        bludiste_data = dao.nacti_bludiste(cesta_k_souboru)
 
-            # vytvoreni instance tridy bludiste
-            self.bludiste = Bludiste(bludiste_data)
+        # vytvoreni instance bludiste
+        self.bludiste = Bludiste(bludiste_data)
 
-            # vytvoreni instance tridy bludisteview
-            self.view = BludisteView(root, self.bludiste, self.window_sirka, self.window_vyska)
-            self.view.vykresli()
+        # vykresleni bludiste
+        self.view.vykresli(self.bludiste)
 
     def vyber_soubor(self):
-        # ziskani cesty k akutalnimu adresari
         slozka = os.path.dirname(__file__)
-
-        # filtr pro podporovane soubory
-        soubory = [f for f in os.listdir(slozka) if f.endswith(('.txt', '.xml', '.csv'))]
-
-        if not soubory:
-            print("Žádné podporované soubory nebyly nalezeny.")
-            return None
-
-        # otevreni dialogoveho okna pro vyber souboru
         soubor = filedialog.askopenfilename(
             title="Vyberte soubor",
             initialdir=slozka,
             filetypes=[("Podporované soubory", "*.txt;*.xml;*.csv")]
         )
-
         return soubor
 
 
 # spusteni aplikace
 def main():
     root = tk.Tk()
-    root.title("Bludiste App")
-
-    # nastaveni rozmeru okna
-    window_width = 600
-    window_height = 450
-
-    # vytvoreni instance aplikace
-    app = BludisteApp(root, window_width, window_height)
-
-    # spusteni hlavni smycky
+    root.title("Bludiště App")
+    app = BludisteApp(root, window_sirka=1000, window_vyska=500)
     root.mainloop()
 
 
