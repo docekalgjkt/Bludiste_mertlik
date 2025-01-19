@@ -42,3 +42,4 @@ class Robot:
                     time.sleep(0.2)  # Animace průchodu
 
         return False
+
