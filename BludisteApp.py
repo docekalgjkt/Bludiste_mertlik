@@ -7,7 +7,6 @@ from Robot import Robot
 from RobotView import RobotView
 from BludisteDAOFactory import BludisteDAOFactory
 
-
 class BludisteApp:
     def __init__(self, root, window_sirka, window_vyska):
         self.root = root
@@ -45,6 +44,7 @@ class BludisteApp:
         bludiste_data = dao.nacti_bludiste(cesta_k_souboru)
 
         self.bludiste = Bludiste(bludiste_data)
+        self.bludiste.app = self  # Pro propojení s BludisteApp
         self.view.vykresli(self.bludiste)
 
         sirka_ctverce = self.view.get_ctverec_sirka()
@@ -112,16 +112,16 @@ class BludisteApp:
             messagebox.showwarning("Chyba", "Robot nebo bludiště nejsou nastaveny.")
             return
 
-        def vizualni_pruchod():
-            if self.robot.dojdi_na_cervene_pole(self.bludiste, self.robot_view):
-                messagebox.showinfo("Úspěch", "Robot dokončil svou práci!")
-            else:
-                messagebox.showwarning("Neúspěch", "Robot nemohl najít cestu k červenému poli.")
+        self.robot.dojdi_na_cervene_pole(self.bludiste, self.robot_view)
 
-        self.root.after(100, vizualni_pruchod)
+    def hlasi_uspech(self):
+        messagebox.showinfo("Úspěch", "Robot dokončil svou práci!")
 
+    def hlasi_neuspech(self):
+        messagebox.showwarning("Neúspěch", "Robot nemohl najít cestu k červenému poli.")
 
 if __name__ == "__main__":
     root = tk.Tk()
     app = BludisteApp(root, 800, 600)
     root.mainloop()
+
