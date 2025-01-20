@@ -1,6 +1,3 @@
-import time
-
-
 class Robot:
     def __init__(self):
         self.x = None
@@ -22,14 +19,26 @@ class Robot:
         navstiveno = set()
         navstiveno.add(start)
 
-        while not queue.empty():
+        cil_dosažen = [False]  # Pro indikaci dosažení cíle
+
+        def krok():
+            if queue.empty():
+                if not cil_dosažen[0]:
+                    # Zpětné volání hlášení do BludisteApp
+                    bludiste.app.hlasi_neuspech()
+                return
+
             x, y = queue.get()
 
+            # Kontrola cílového pole (červené pole)
             if bludiste.bludiste[y][x] == 2:
                 self.nastav_pozici(x, y)
                 robot_view.vykresli(self)
-                return True
+                cil_dosažen[0] = True
+                bludiste.app.hlasi_uspech()
+                return
 
+            # Procházení pouze ortogonálních sousedních polí
             for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
                 nx, ny = x + dx, y + dy
 
@@ -37,9 +46,13 @@ class Robot:
                     queue.put((nx, ny))
                     navstiveno.add((nx, ny))
 
-                    self.nastav_pozici(nx, ny)
-                    robot_view.vykresli(self)
-                    time.sleep(0.2)  # Animace průchodu
+            # Animace pohybu robota
+            self.nastav_pozici(x, y)
+            robot_view.vykresli(self)
 
-        return False
+            # Další krok po 200 ms
+            robot_view.canvas.after(200, krok)
+
+        krok()  # Spuštění prvního kroku
+
 
