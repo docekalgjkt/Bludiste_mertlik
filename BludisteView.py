@@ -56,8 +56,9 @@ class BludisteView:
 
         buttons = [
             ("Vybrat Bludiště", self.vyber_bludiste_callback),
-            ("Umísti Robota", self.app.aktivuj_rezim_umistit_robota),  # Odkaz na metodu app
-            ("Vymaž Robota", self.app.vymaz_robota),  # Odkaz na metodu app
+            ("Umísti Robota", self.app.aktivuj_rezim_umistit_robota),
+            ("Vymaž Robota", self.app.vymaz_robota),
+            ("Spustit Průchod", self.app.spust_pruchod),  # Nové tlačítko
         ]
 
         for text, command in buttons:
@@ -67,4 +68,5 @@ class BludisteView:
                 width=self.control_width - 20,
                 height=button_height
             )
-            current_y += button_height + button_spacing 
+            current_y += button_height + button_spacing
+
